@@ -1,0 +1,14 @@
+Source: eta-widget-quickappsandusb
+Section: utils
+Priority: optional
+Maintainer: Yunusemre Şentürk <yunusemre.senturk@pardus.org.tr>
+Build-Depends: debhelper (>= 9),
+Standards-Version: 3.9.6
+Homepage: http://etap.org.tr
+
+Package: eta-widget-quickappsandusb
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, dolphin, plasma-dataengines-workspace, libreoffice, firefox-esr, eta-ebalogin, eta-engine
+Description: ETAP hızlı uygulama başlatıcı ve usb
+ Panel içerisinde kullanılabilen basit bir uygulama
+ başlatma listesi ve usb yönetim gereci.
