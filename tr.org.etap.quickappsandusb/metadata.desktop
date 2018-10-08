@@ -7,6 +7,7 @@ ServiceTypes=Plasma/Applet,Plasma/PopupApplet
 
 X-Plasma-API=declarativeappletscript
 X-Plasma-MainScript=ui/main.qml
+X-Plasma-RequiredExtensions=LaunchApp
 X-Plasma-NotificationArea=true
 X-Plasma-ConfigPlugins=device_automounter_kcm
 
