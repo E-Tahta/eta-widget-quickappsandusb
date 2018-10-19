@@ -8,7 +8,7 @@ Homepage: http://etap.org.tr
 
 Package: eta-widget-quickappsandusb
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, dolphin, plasma-dataengines-workspace, libreoffice, firefox-esr, eta-ebalogin, eta-engine
+Depends: ${shlibs:Depends}, ${misc:Depends}, plasma-dataengines-workspace, libreoffice, eta-ebalogin, eta-engine
 Description: ETAP hızlı uygulama başlatıcı ve usb
  Panel içerisinde kullanılabilen basit bir uygulama
  başlatma listesi ve usb yönetim gereci.
