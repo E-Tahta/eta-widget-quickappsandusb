@@ -31,12 +31,11 @@ Rectangle {
     property string devicesType: "removable"
     property string expandedDevice
     property string mountPoint
-    property string mainUdi : DataEngineSource
+    //property string mainUdi : DataEngineSource
     property Component compactRepresentation: WidgetCompactRepresenter {}
-
     property bool popUpEnabled : true
-
     color: "#383838"
+
     PlasmaCore.Theme {
         id: theme
     }
@@ -72,8 +71,8 @@ Rectangle {
         function processLastDevice(expand) {
             if (last != "") {
                 if (devicesType == "all" ||
-                    (devicesType == "removable" && data[last] && data[last]["Removable"] == true) ||
-                    (devicesType == "nonRemovable" && data[last] && data[last]["Removable"] == false)) {
+                        (devicesType == "removable" && data[last] && data[last]["Removable"] == true) ||
+                        (devicesType == "nonRemovable" && data[last] && data[last]["Removable"] == false)) {
 
                     if (expand && hpSource.data[last]["added"]) {
                         expandDevice(last);
@@ -115,9 +114,9 @@ Rectangle {
     }
 
     PlasmaCore.DataSource {
-            id: screenData
-            engine: "userinfo"
-            connectedSources: ["Local"]
+        id: screenData
+        engine: "userinfo"
+        connectedSources: ["Local"]
 
     }
     Component.onCompleted: {
@@ -136,7 +135,7 @@ Rectangle {
     }
 
     function configChanged()
-    {        
+    {
         textFont = plasmoid.readConfig( "textFont" )
     }
 
@@ -144,7 +143,7 @@ Rectangle {
     {
         if (hpSource.data[udi]["actions"].length > 1) {
             expandedDevice = udi
-        }        
+        }
         notifierDialog.itemClicked = false;
         if (popUpEnabled) {
             plasmoid.showPopup(7500)
@@ -163,6 +162,10 @@ Rectangle {
         anchors.fill: parent
         onEntered: notifierDialog.itemHovered()
         onExited: notifierDialog.itemUnhovered()
+        PlasmaCore.Svg {
+            id: lineSvg
+            imagePath: "widgets/line"
+        }
         PlasmaExtras.ScrollArea {
             anchors {
                 top : parent.top
@@ -173,6 +176,7 @@ Rectangle {
             }
             ListView {
                 id: notifierDialog
+
                 model: PlasmaCore.SortFilterModel {
                     id: filterModel
                     sourceModel: PlasmaCore.DataModel {
@@ -194,7 +198,7 @@ Rectangle {
                         passiveTimer.restart()
                     } else {
                         passiveTimer.stop()
-                        plasmoid.status = "ActiveStatus"                      
+                        plasmoid.status = "ActiveStatus"
                     }
                 }
                 function itemHovered() {

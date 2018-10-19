@@ -35,417 +35,341 @@ import org.kde.plasma.graphicswidgets 0.1 as PlasmaWidgets
 Item {
     id: widgetrepresenter
 
-    /**
-     * Indicates that the minimum width of the widget regarding the screen
-     * resolution.
-     */
-    property int minimumWidth: screenData.data["Local"]["width"]*14/100;
-
-    /**
-     * Indicates that the minimum height of the widget regarding the sub
-     * modules that are quick application launchers' rectangles determined
-     * by the function checkUser(string user_nickname).
-     */
-    property int minimumHeight: checkUser(userDataSource.data["Local"]["loginname"])
-
-    /**
-     * Indicates that the global veriable for general left & right alignment
-     * regarding the screen resolution.
-     */
-    property int leftrightAlign: minimumWidth*9/100
-
-    /**
-     * Indicates that the global veriable for general line alignment
-     * regarding the screen resolution.
-     */
-    property int lineAlign: minimumWidth * 7 / 100
-
-    /**
-     * Indicates that the global veriable for general text left & right
-     * alignment regarding the screen resolution.
-     */
-    property int textAlign: minimumWidth *4 / 100
-
+    property int minimumWidth: screenData.data["Local"]["width"]*14/100
     property string username : userDataSource.data["Local"]["loginname"]
-
+    property int minimumHeight: calculateHeight(username)
+    property int leftRightAlign: minimumWidth * 9 / 100
+    property int lineAlign: minimumWidth * 7 / 100
+    property int textAlign: minimumWidth *4 / 100
     property int toolButtonIconSize : minimumWidth * 21 / 100
+    property int toolContainerHeight: minimumWidth * 22 / 100
+
+    property string textColor: "#969699"
+    property string textPressedColor: "#FF6C00"
 
     Column {
         anchors.fill:parent
         Rectangle {
-            id:filemanager
+            id: fileManagerContainer
             width: minimumWidth
-            height: minimumWidth * 22 /100
+            height: toolContainerHeight
             color: "transparent"
-            Row {
-                anchors {
-                    fill:parent
-                }
-                Item {
-                    id:toolbuttonfilemanager
-                    height: toolButtonIconSize
-                    width: height
-                    anchors {
-                        left:  parent.left
-                        leftMargin: leftrightAlign
-                        verticalCenter: parent.verticalCenter
-                    }
-                    PlasmaWidgets.IconWidget {
-                        id: dolphinIcon                        
-                        anchors.fill:parent
 
-                        Component.onCompleted: {
-                            setIcon("eta-file-manager")
-                        }
+            Item {
+                id:fileManagerIconContainer
+                height: parent.height
+                width: toolButtonIconSize
+                anchors {
+                    left:  parent.left
+                    leftMargin: leftRightAlign
+                    verticalCenter: parent.verticalCenter
+                }
+                PlasmaWidgets.IconWidget {
+                    id: fileManagerIcon
+                    anchors.fill:parent
+                    onClicked: {
+                        plasmoid.runCommand("xdg-open", ["."])
+                    }
+                    Component.onCompleted: {
+                        setIcon("eta-file-manager")
                     }
                 }
-                Item {
+            }
+
+            Item {
+                height: fileManagerContainer.height
+                width: fileManagerContainer.width - height - leftRightAlign
+                anchors {
+                    left:fileManagerIconContainer.right
+                    verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id:fileManagerText
+                    text: "DOSYALARIM"
+                    color: textColor
+                    font.family:textFont
+                    font.bold : true
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideLeft
                     anchors {
-                        left:toolbuttonfilemanager.right
-                        leftMargin :textAlign
+                        left: parent.left
+                        leftMargin: textAlign
+                        right: parent.right
+                        rightMargin: textAlign
                         verticalCenter: parent.verticalCenter
-                    } Text {
-                        id:dolphintext
-                        text: "DOSYALARIM"
-                        color: "#969699"
-                        font.family:textFont
-                        font.bold : true
-                        elide: Text.ElideLeft
-                        horizontalAlignment: Text.AlignLeft
-                        anchors {
-                            left: parent.left
-                            leftMargin: 0
-                            verticalCenter: parent.verticalCenter
-                            verticalCenterOffset: 0
-                        }
-                    }//label
-                }//item labelcontainer
-            }//Row
-            MouseArea {
-                anchors.fill: parent
-                onPressAndHold: { dolphintext.color= "#FF6C00" }
-                onPressed: {dolphintext.color= "#FF6C00" }
-                onReleased: {plasmoid.runCommand("dolphin"); dolphintext.color= "#969699";}
+                    }
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressAndHold: { fileManagerText.color= textPressedColor }
+                    onPressed: { fileManagerText.color= textPressedColor }
+                    onReleased: { fileManagerText.color= textColor }
+                    onClicked: { fileManagerIcon.clicked() }
+                }
             }
         }
+
         Rectangle {
             id:usb
             width: minimumWidth
-            height: minimumWidth * 22 /100
+            height: toolContainerHeight
             color: "transparent"
-            Row {
+            Item {
+                id:usbIconContainer
+                height: parent.height
+                width: toolButtonIconSize
                 anchors {
-                    top:parent.top
-                    topMargin:0
-                    fill:parent
+                    left:  parent.left
+                    leftMargin: leftRightAlign
+                    verticalCenter: parent.verticalCenter
                 }
-                Item {
-                    id:toolbuttonusbcontainer
-                    height: toolButtonIconSize
-                    width: height
-                    anchors {
-                        left:  parent.left
-                        leftMargin: leftrightAlign
-                        verticalCenter: parent.verticalCenter
+                PlasmaWidgets.IconWidget {
+                    id: usbIcon
+                    anchors.fill:parent
+                    onClicked: {
+                        plasmoid.togglePopup()
                     }
-                    PlasmaWidgets.IconWidget {
-                        id: usbIcon                        
-                        anchors.fill:parent
-                        Component.onCompleted: {
-                            setIcon("eta-usb")
-                        }
+                    Component.onCompleted: {
+                        setIcon("eta-usb")
                     }
-                }//ToolButton
-                Item {
+                }
+            }
+            Item {
+                height: usb.height
+                width: usb.width - height - leftRightAlign - usbArrowIconContainer.width
+                anchors {
+                    left:usbIconContainer.right
+                    verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id:usbText
+                    text: "USB BELLEK" + " " + mountPoint
+                    color: textColor
+                    font.family:textFont
+                    font.bold : true
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideLeft
                     anchors {
-                        left:toolbuttonusbcontainer.right
-                        leftMargin :textAlign
-                        verticalCenter: parent.verticalCenter
-                    } Text {
-                        id:usbtext
-                        text: "USB BELLEK " + mountPoint
-                        color: "#969699"
-                        font.family:textFont
-                        font.bold : true
-                        elide: Text.ElideLeft
-                        horizontalAlignment: Text.AlignLeft
-                        anchors {
-                            left: parent.left
-                            leftMargin: 0
-                            verticalCenter: parent.verticalCenter
-                            verticalCenterOffset: 0
-                        }
-                    }//label                    
-                }//item labelcontainer
-                Item {
-                    id:usbarrowContainer
-                    width:minimumWidth * 13 /100
-                    height: minimumWidth * 18 /100
-                    anchors {
+                        left: parent.left
+                        leftMargin: textAlign
                         right: parent.right
-                        rightMargin: 2
+                        rightMargin: textAlign
                         verticalCenter: parent.verticalCenter
                     }
-
-                    PlasmaWidgets.IconWidget
-                    {
-                      id: usbarrowIcon                      
-                      anchors.fill:parent
-                      Component.onCompleted: {
-                          setIcon("eta-usb-arrow")
-                      }
-                      onClicked:{
-                            plasmoid.togglePopup();
-                      }
-                    }
-                    /*
-                    Image {
-                        id: usbarrowIcon
-                        source: "../images/usb_arrow.png"
-                        height: 32
-                        width: 32
-                        anchors {
-                            bottom:parent.bottom
-                            right: parent.right
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                plasmoid.togglePopup();
-                            }
-                        }
-                    }
-                    */
                 }
-            }//Row
-            MouseArea {
-                height: minimumWidth * 18 /100
-                width: usb.width-usbarrowContainer.width
-                anchors {
-                    left:parent.left
-                    top:parent.top
-                    bottom:parent.bottom
-                    right: usbarrowContainer.left
-                }
-                onPressAndHold: { usbtext.color= "#FF6C00"; }
-                onPressed: {usbtext.color= "#FF6C00"; }
-                onReleased: {
-                    usbtext.color= "#969699";
-                    plasmoid.togglePopup();
-                    //plasmoid.runCommand("dolphin",[mountPoint]);}
+                MouseArea {
+                    anchors.fill: parent
+                    onPressAndHold: { usbText.color= textPressedColor }
+                    onPressed: { usbText.color= textPressedColor }
+                    onReleased: { usbText.color= textColor }
+                    onClicked: { usbIcon.clicked() }
                 }
             }
+
+            Item {
+                id:usbArrowIconContainer
+                height: parent.height
+                width:minimumWidth * 13 /100
+                anchors {
+                    right: parent.right
+                    rightMargin: 2
+                    verticalCenter: parent.verticalCenter
+                }
+                PlasmaWidgets.IconWidget {
+                    id: usbarrowIcon
+                    anchors.fill:parent
+                    Component.onCompleted: {
+                        setIcon("eta-usb-arrow")
+                    }
+                    onClicked:{
+                        usbIcon.clicked()
+                    }
+                }
+
+            }
+
         }
+
         Rectangle {
-            id:libre
+            id: libreOfficeContainer
             width: minimumWidth
-            height: minimumWidth * 22 /100
+            height: toolContainerHeight
             color: "transparent"
-            Row {
+
+            Item {
+                id:libreOfficeIconContainer
+                height: parent.height
+                width: toolButtonIconSize
                 anchors {
-                    top:parent.top
-                    topMargin:0
-                    fill:parent
+                    left:  parent.left
+                    leftMargin: leftRightAlign
+                    verticalCenter: parent.verticalCenter
                 }
-                Item {
-                    id:toolbuttonlibrecontainer
-                    height: toolButtonIconSize
-                    width: height
+                PlasmaWidgets.IconWidget {
+                    id: libreOfficeIcon
+                    anchors.fill:parent
+                    onClicked: {
+                        plasmoid.runCommand("libreoffice")
+                    }
+                    Component.onCompleted: {
+                        setIcon("libreoffice")
+                    }
+                }
+            }
+
+            Item {
+                height: libreOfficeContainer.height
+                width: libreOfficeContainer.width - height - leftRightAlign
+                anchors {
+                    left:libreOfficeIconContainer.right
+                    verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id:libreOfficeText
+                    text: "LIBRE OFFICE"
+                    color: textColor
+                    font.family:textFont
+                    font.bold : true
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideLeft
                     anchors {
-                        left:  parent.left
-                        leftMargin: leftrightAlign
+                        left: parent.left
+                        leftMargin: textAlign
+                        right: parent.right
+                        rightMargin: textAlign
                         verticalCenter: parent.verticalCenter
                     }
-                    PlasmaWidgets.IconWidget {
-                        id: libreIcon                        
-                        anchors.fill:parent
-                        Component.onCompleted: {
-                            setIcon("libreoffice")
-                        }
-                    }
-                }//ToolButton
-                Item {
-                    anchors {
-                        left:toolbuttonlibrecontainer.right
-                        leftMargin :textAlign
-                        verticalCenter: parent.verticalCenter
-                    } Text {
-                        id:libretext
-                        text: "LIBRE OFFICE"
-                        color: "#969699"
-                        font.family:textFont
-                        font.bold : true
-                        elide: Text.ElideLeft
-                        horizontalAlignment: Text.AlignLeft
-                        anchors {
-                            left: parent.left
-                            leftMargin: 0
-                            verticalCenter: parent.verticalCenter
-                            verticalCenterOffset: 0
-                        }
-                    }//label
-                }//item labelcontainer
-            }//Row
-            MouseArea {
-                anchors.fill: parent
-                onPressAndHold: { libretext.color= "#FF6C00"; }
-                onPressed: {libretext.color= "#FF6C00"; }
-                onReleased: {plasmoid.runCommand("libreoffice"); libretext.color= "#969699";}
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressAndHold: { libreOfficeText.color= textPressedColor }
+                    onPressed: { libreOfficeText.color= textPressedColor }
+                    onReleased: { libreOfficeText.color= textColor }
+                    onClicked: { libreOfficeIcon.clicked() }
+                }
             }
         }
+
         Rectangle {
-            id:firefox
+            id: browserContainer
             width: minimumWidth
-            height: minimumWidth * 22 /100
+            height: toolContainerHeight
             color: "transparent"
-            Row {
-                anchors {
-                    top:parent.top
-                    topMargin:0
-                    fill:parent
-                }
-                Item {
-                    id:toolbuttonfirefoxcontainer
-                    height: toolButtonIconSize
-                    width: height
-                    anchors {
-                        left:  parent.left
-                        leftMargin: leftrightAlign
-                        verticalCenter: parent.verticalCenter
-                    }
-                    PlasmaWidgets.IconWidget {
-                        id: firefoxIcon                        
-                        anchors.fill:parent
-                        Component.onCompleted: {
-                            setIcon("eta-browser")
-                        }
-                    }
-                }//ToolButton
-                Item {
-                    anchors {
-                        left:toolbuttonfirefoxcontainer.right
-                        leftMargin :textAlign
-                        verticalCenter: parent.verticalCenter
-                    }
-                    Text {
-                        id:firefoxtext
-                        text: "İNTERNET TARAYICISI"
-                        color: "#969699"
-                        font.family:textFont
-                        font.bold : true
-                        elide: Text.ElideLeft
-                        horizontalAlignment: Text.AlignLeft
-                        anchors {
-                            left: parent.left
-                            leftMargin: 0
-                            verticalCenter: parent.verticalCenter
-                            verticalCenterOffset: 0
-                        }
-                    }//label
-                }//item labelcontainer
-            }//Row
-            MouseArea {
-                anchors.fill: parent
 
-                onPressAndHold: { firefoxtext.color= "#FF6C00"; }
-                onPressed: {firefoxtext.color= "#FF6C00"; }
-                onReleased: {
-                    plasmoid.runCommand("firefox");
-                    firefoxtext.color= "#969699";
+            Item {
+                id:browserIconContainer
+                height: parent.height
+                width: toolButtonIconSize
+                anchors {
+                    left:  parent.left
+                    leftMargin: leftRightAlign
+                    verticalCenter: parent.verticalCenter
+                }
+                PlasmaWidgets.IconWidget {
+                    id: browserIcon
+                    anchors.fill:parent
+                    onClicked: {
+                        plasmoid.runCommand("xdg-open", ["https://www.google.com.tr"])
+                    }
+                    Component.onCompleted: {
+                        setIcon("eta-browser")
+                    }
+                }
+            }
+
+            Item {
+                height: browserContainer.height
+                width: browserContainer.width - height - leftRightAlign
+                anchors {
+                    left:browserIconContainer.right
+                    verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id:browserText
+                    text: "İNTERNET TARAYICISI"
+                    color: textColor
+                    font.family:textFont
+                    font.bold : true
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideLeft
+                    anchors {
+                        left: parent.left
+                        leftMargin: textAlign
+                        right: parent.right
+                        rightMargin: textAlign
+                        verticalCenter: parent.verticalCenter
+                    }
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressAndHold: {browserText.color= textPressedColor }
+                    onPressed: { browserText.color= textPressedColor }
+                    onReleased: { browserText.color= textColor }
+                    onClicked: { browserIcon.clicked() }
                 }
             }
         }
+
         Rectangle {
-            id:eba
+            id: eba
             width: minimumWidth
-            height: minimumWidth * 22 /100
+            height: toolContainerHeight
             color: "transparent"
-            Row {
+
+            Item {
+                id:ebaIconContainer
+                height: parent.height
+                width: toolButtonIconSize
                 anchors {
-                    top:parent.top
-                    topMargin:0
-                    fill:parent
+                    left:  parent.left
+                    leftMargin: leftRightAlign
+                    verticalCenter: parent.verticalCenter
                 }
-                Item {
-                    id:toolbuttonebacontainer
-                    height: toolButtonIconSize
-                    width: height
+                PlasmaWidgets.IconWidget {
+                    id: ebaIcon
+                    anchors.fill:parent
+                    onClicked: {
+                        plasmoid.runCommand("/usr/bin/ebalogin")
+                    }
+                    Component.onCompleted: {
+                        setIcon("eta-eba")
+                    }
+                }
+            }
+
+            Item {
+                height: eba.height
+                width: eba.width - height - leftRightAlign
+                anchors {
+                    left:ebaIconContainer.right
+                    verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id:ebaText
+                    text: "EBA"
+                    color: textColor
+                    font.family:textFont
+                    font.bold : true
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideLeft
                     anchors {
-                        left:  parent.left
-                        leftMargin: leftrightAlign
+                        left: parent.left
+                        leftMargin: textAlign
+                        right: parent.right
+                        rightMargin: textAlign
                         verticalCenter: parent.verticalCenter
                     }
-                    PlasmaWidgets.IconWidget {
-                        id: ebaIcon                        
-                        anchors.fill:parent
-                        Component.onCompleted: {
-                            setIcon("eta-eba")
-                        }
-                    }
-                }//ToolButton
-                Item {
-                    anchors {
-                        left:toolbuttonebacontainer.right
-                        leftMargin :textAlign
-                        verticalCenter: parent.verticalCenter
-                    }
-                    Text {
-                        id:ebatext
-                        text: "EBA"
-                        color: "#969699"
-                        font.family:textFont
-                        font.bold : true
-                        elide: Text.ElideLeft
-                        horizontalAlignment: Text.AlignLeft
-                        anchors {
-                            left: parent.left
-                            leftMargin: 0
-                            verticalCenter: parent.verticalCenter
-                            verticalCenterOffset: 0
-                        }
-                    }//label
-                }//item labelcontainer
-            }//Row
-            MouseArea {
-                anchors.fill: parent
-
-                onPressAndHold: { ebatext.color= "#FF6C00"; }
-                onPressed: {ebatext.color= "#FF6C00"; }
-
-                onReleased: {
-                    /*
-                    if(widgetrepresenter.username != "ogrenci"){
-                        if(widgetrepresenter.state == 'visible') {
-                            widgetrepresenter.state = 'invisible';
-                            plasmoid.runCommand("qdbus",["org.eta.virtualkeyboard",
-                                                         "/VirtualKeyboard",
-                                                         "org.eta.virtualkeyboard.hidePinInput"]);
-                            ebatext.color= "#969699";
-                        } else {
-                            widgetrepresenter.state = 'visible';
-                            if(passRect.isActive){
-                                plasmoid.runCommand("qdbus",["org.eta.virtualkeyboard",
-                                                             "/VirtualKeyboard",
-                                                             "org.eta.virtualkeyboard.showPinInput"]);
-                            }
-                            ebatext.color= "#FF6C00";
-                        }
-                    } else {
-                        widgetrepresenter.state = 'invisible';
-                        ebatext.color= "#969699";
-                        plasmoid.runCommand("firefox",["-new-window",
-                                                       "http://eba.gov.tr"]);
-                    }
-                    */
-                    widgetrepresenter.state = 'invisible';
-                    ebatext.color= "#969699";
-                    plasmoid.runCommand("/usr/bin/ebalogin");
-                    //plasmoid.runCommand("chromium",["--new-window",
-                    //                               "http://eba.gov.tr"]);
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressAndHold: { ebaText.color= textPressedColor }
+                    onPressed: { ebaText.color= textPressedColor }
+                    onReleased: { ebaText.color= textColor }
+                    onClicked: { ebaIcon.clicked() }
                 }
             }
         }
-    }//main column
+    }
 
     /**
      * This function determines minimum height of the widget by regarding
@@ -454,26 +378,26 @@ Item {
      * @param type:string username
      * @return type:int minimumHeight
      */
-    function checkUser(username) {
-        if(username === "ogrenci") {
+    function calculateHeight(name) {
+        if(name === "ogrenci") {
             usb.visible=false
             passRect.visible = false
             popUpEnabled = false
-            return filemanager.height+libre.height+firefox.height+eba.height
+            return fileManagerContainer.height+libreOfficeContainer.height+browserContainer.height+eba.height
         }
-        return filemanager.height+usb.height+libre.height+firefox.height+eba.height;
-    }    
-
-    PasswordInput {
-        id:passRect
-        width: minimumWidth
-        height: eba.height
-        x:widgetrepresenter.x + passRect.width
-        y:eba.y
-        z:-1
-        opacity: 0
-
+        return fileManagerContainer.height+usb.height+libreOfficeContainer.height+browserContainer.height+eba.height;
     }
+
+//    PasswordInput {
+//        id:passRect
+//        width: minimumWidth
+//        height: eba.height
+//        x:widgetrepresenter.x + passRect.width
+//        y:eba.y
+//        z:-1
+//        opacity: 0
+
+//    }
 
     states: [
         State {
