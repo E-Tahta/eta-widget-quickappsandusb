@@ -269,7 +269,7 @@ Item {
                     id: browserIcon
                     anchors.fill:parent
                     onClicked: {
-                        plasmoid.runCommand("xdg-open", ["https://www.google.com.tr"])
+                        plasmoid.runCommand("sensible-browser")
                     }
                     Component.onCompleted: {
                         setIcon("eta-browser")
