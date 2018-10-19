@@ -1,3 +1,10 @@
+eta-widget-quickappsandusb (1.2) unstable; urgency=medium
+
+  * Fix clickable area and change application call mechanism
+  * Remove dolphin and firefox-esr from depends
+
+ -- Yunusemre Şentürk <yunusemre.senturk@pardus.org.tr>  Fri, 19 Oct 2018 14:41:14 +0300
+
 eta-widget-quickappsandusb (1.1) unstable; urgency=medium
 
   * Add required missing section LaunchApp
