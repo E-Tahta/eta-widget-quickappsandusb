@@ -1,3 +1,9 @@
+eta-widget-quickappsandusb (1.4) unstable; urgency=medium
+
+  * Fix popup and height issues on ogrenci user
+
+ -- Yunusemre Şentürk <yunusemre.senturk@pardus.org.tr>  Fri, 26 Oct 2018 13:53:02 +0300
+
 eta-widget-quickappsandusb (1.3) unstable; urgency=medium
 
   * Fix browser not openning under noconnection condition
