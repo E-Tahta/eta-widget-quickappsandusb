@@ -37,7 +37,7 @@ Item {
 
     property int minimumWidth: screenData.data["Local"]["width"]*14/100
     property string username : userDataSource.data["Local"]["loginname"]
-    property int minimumHeight: calculateHeight(username)
+    property int minimumHeight: calculateHeight(userDataSource.data["Local"]["loginname"])
     property int leftRightAlign: minimumWidth * 9 / 100
     property int lineAlign: minimumWidth * 7 / 100
     property int textAlign: minimumWidth *4 / 100
@@ -127,7 +127,9 @@ Item {
                     id: usbIcon
                     anchors.fill:parent
                     onClicked: {
-                        plasmoid.togglePopup()
+                        if(userDataSource.data["Local"]["loginname"] != "ogrenci") {
+                            plasmoid.togglePopup()
+                        }
                     }
                     Component.onCompleted: {
                         setIcon("eta-usb")
@@ -378,26 +380,26 @@ Item {
      * @param type:string username
      * @return type:int minimumHeight
      */
-    function calculateHeight(name) {
-        if(name === "ogrenci") {
-            usb.visible=false
-            passRect.visible = false
-            popUpEnabled = false
+    function calculateHeight() {
+        if(username == "ogrenci") {
+            usb.visible = false
+            devicenotifier.visible = false
+            devicenotifier.popUpEnabled = false
             return fileManagerContainer.height+libreOfficeContainer.height+browserContainer.height+eba.height
         }
         return fileManagerContainer.height+usb.height+libreOfficeContainer.height+browserContainer.height+eba.height;
     }
 
-//    PasswordInput {
-//        id:passRect
-//        width: minimumWidth
-//        height: eba.height
-//        x:widgetrepresenter.x + passRect.width
-//        y:eba.y
-//        z:-1
-//        opacity: 0
+    //    PasswordInput {
+    //        id:passRect
+    //        width: minimumWidth
+    //        height: eba.height
+    //        x:widgetrepresenter.x + passRect.width
+    //        y:eba.y
+    //        z:-1
+    //        opacity: 0
 
-//    }
+    //    }
 
     states: [
         State {

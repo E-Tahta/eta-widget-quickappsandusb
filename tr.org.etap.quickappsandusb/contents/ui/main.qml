@@ -127,9 +127,14 @@ Rectangle {
         if (notifierDialog.count == 0) {
             plasmoid.status = "PassiveStatus"
         }
-
-        devicenotifier.minimumHeight = screenData.data["Local"]["width"] * 39 / 250;
-        devicenotifier.minimumWidth = screenData.data["Local"]["width"]*16 / 100;
+        
+        if (screenData.data["Local"]["loginname"] != "ogrenci") {
+            devicenotifier.minimumHeight = screenData.data["Local"]["width"] * 39 / 250;
+            devicenotifier.minimumWidth = screenData.data["Local"]["width"]*16 / 100;
+        } else {
+            devicenotifier.minimumHeight = 0
+            devicenotifier.minimumWidth = 0
+        }
 
 
     }
