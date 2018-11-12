@@ -1,3 +1,9 @@
+eta-widget-quickappsandusb (1.5) stable; urgency=medium
+
+  * Fix usb showing bugs and enhance on compact representer
+
+ -- Yunusemre Şentürk <yunusemre.senturk@pardus.org.tr>  Mon, 12 Nov 2018 10:04:31 +0300
+
 eta-widget-quickappsandusb (1.4) unstable; urgency=medium
 
   * Fix popup and height issues on ogrenci user
