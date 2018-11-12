@@ -36,7 +36,15 @@ Item {
     property alias percentUsage: freeSpaceBar.value
     signal leftActionTriggered
     height: container.childrenRect.height
-    width: parent.width
+    //width: parent.width
+    Component.onCompleted: {
+        if(! mounted) {
+            service = sdSource.serviceForSource(udi);
+            operation = service.operationDescription("mount");
+            service.startOperationCall(operation);
+        }
+    }
+
     MouseArea {
         id: container
         anchors {
@@ -47,9 +55,11 @@ Item {
         onEntered: {
             notifierDialog.currentIndex = index;
             //notifierDialog.highlightItem.opacity = 1;
-            service = sdSource.serviceForSource(udi);
-            operation = service.operationDescription("mount");
-            service.startOperationCall(operation);
+            if(! mounted) {
+                service = sdSource.serviceForSource(udi);
+                operation = service.operationDescription("mount");
+                service.startOperationCall(operation);
+            }
         }
         onExited: {
             //notifierDialog.highlightItem.opacity = expanded ? 1 : 0;
@@ -100,6 +110,7 @@ Item {
                 top: parent.top
                 left: deviceIcon.right
                 right: parent.right
+                verticalCenter: parent.verticalCenter
 
             }
 
@@ -117,39 +128,52 @@ Item {
 
             Item {
                 height:freeSpaceBar.height
+                //width: parent.width - 30
                 anchors {
                     left: parent.left
                     right: parent.right
+                    rightMargin: 40
                 }
                 opacity: (deviceItem.state == 0 && mounted) ? 1 : 0
                 PlasmaComponents.ProgressBar {
                     id: freeSpaceBar
-                    height: deviceStatus.height
+                    height: deviceStatus.height + 2
                     anchors {
                         left: parent.left
                         right: parent.right
                     }
-                    opacity: mounted ? deviceStatus.opacity : 0
+                    opacity: 1//mounted ? deviceStatus.opacity : 0
                     minimumValue: 0
                     maximumValue: 100
                     orientation: Qt.Horizontal
+                }
+
+                Text {
+                    id: persentageText
+                    width: parent.width
+                    height: freeSpaceBar.height - 2
+                    anchors {
+                        left: parent.left
+                        verticalCenter: freeSpaceBar.verticalCenter
+                    }
+                    color: "#eeeeee"
+                    text:"% " + freeSpaceBar.value.toFixed(1) + " Dolu"
                 }
             }
 
             Item {
                 width:deviceStatus.width
                 height:deviceStatus.height
-                PlasmaComponents.Label {
+                Text {
                     id: deviceStatus
-
-                    height: paintedHeight
+                    //height: paintedHeight
                     // FIXME: state changes do not reach the plasmoid if the
                     // device was already attached when the plasmoid was
                     // initialized
                     text: deviceItem.state == 0 ? container.idleStatus() : (deviceItem.state==1 ? i18nc("Accessing is a less technical word for Mounting; translation should be short and mean \'Currently mounting this device\'", "Accessing...") : i18nc("Removing is a less technical word for Unmounting; translation shoud be short and mean \'Currently unmounting this device\'", "Removing..."))
                     font.pointSize: theme.smallestFont.pointSize
                     color: "#ffffff"
-                    opacity: deviceItem.state != 0 || container.containsMouse || expanded ? 1 : 0;
+                    opacity: mounted //deviceItem.state != 0 || container.containsMouse || expanded ? 1 : 0;
 
                     Behavior on opacity { NumberAnimation { duration: 150 } }
                 }
@@ -184,7 +208,7 @@ Item {
             PlasmaCore.IconItem {
                 id: leftAction
                 anchors.fill: parent
-                active: leftActionArea.containsMouse
+                active: true
                 visible: !busySpinner.visible
             }
 
@@ -210,7 +234,7 @@ Item {
                 }
             }
         }
-
+/*
         ListView {
             id: actionsList
             anchors {
@@ -243,6 +267,7 @@ Item {
                 predicate: modelData["predicate"]
             }
         }
+        */
     }
     function makeCurrent() {
         notifierDialog.currentIndex = index;

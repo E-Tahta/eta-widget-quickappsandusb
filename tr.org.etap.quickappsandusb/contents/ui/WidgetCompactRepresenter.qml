@@ -135,6 +135,32 @@ Item {
                         setIcon("eta-usb")
                     }
                 }
+
+                Rectangle {
+                    id: deviceCountDelegate
+                    visible: deviceCount != 0
+                    width: 18
+                    height: width
+                    radius: width / 2
+                    smooth: true
+                    color: "#FF6C00"
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    Text {
+                        id: deviceCountDelegateText
+                        text: deviceCount
+                        anchors {
+                            horizontalCenter: parent.horizontalCenter
+                            verticalCenter: parent.verticalCenter
+                            horizontalCenterOffset: 1
+                        }
+
+                        //font.pointSize: 7
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignRight
+                        color: "#eeeeee"
+                    }
+                }
             }
             Item {
                 height: usb.height

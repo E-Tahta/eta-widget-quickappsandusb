@@ -27,6 +27,7 @@ Rectangle {
     id: devicenotifier
     property int minimumWidth
     property int minimumHeight
+    property int deviceCount: 0
     property string textFont
     property string devicesType: "removable"
     property string expandedDevice
@@ -199,6 +200,7 @@ Rectangle {
                 //acceptable since one doesn't have a billion of devices
                 cacheBuffer: 1000
                 onCountChanged: {
+                    deviceCount = count
                     if (count == 0) {
                         passiveTimer.restart()
                     } else {
@@ -252,6 +254,19 @@ Rectangle {
                 }
                 Component.onCompleted: currentIndex=-1
             }
+
+
+        }
+        Text {
+            width: parent.width
+            anchors.centerIn: parent
+            color: "#FF6C00"
+            visible: notifierDialog.count == 0
+            text: "USB BELLEK\nTESPİT EDİLEMEDİ"
+            font.bold: true
+            font.pointSize: 11
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
         }
         Component {
             id: deviceItem
@@ -270,6 +285,7 @@ Rectangle {
                     var used = size-freeSpace;
                     return used*100/size;
                 }
+
                 leftActionIcon: {
                     if (mounted) {
                         return QIcon("media-eject");
