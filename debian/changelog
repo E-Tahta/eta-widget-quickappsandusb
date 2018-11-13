@@ -1,3 +1,10 @@
+eta-widget-quickappsandusb (1.6) stable; urgency=medium
+
+  * Add delay before mounting when device added
+  * Update Makefile and use default desktop file
+
+ -- Yunusemre Şentürk <yunusemre.senturk@pardus.org.tr>  Tue, 13 Nov 2018 08:57:36 +0300
+
 eta-widget-quickappsandusb (1.5) stable; urgency=medium
 
   * Fix usb showing bugs and enhance on compact representer
