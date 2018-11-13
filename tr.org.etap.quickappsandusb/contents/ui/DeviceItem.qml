@@ -38,10 +38,19 @@ Item {
     height: container.childrenRect.height
     //width: parent.width
     Component.onCompleted: {
-        if(! mounted) {
-            service = sdSource.serviceForSource(udi);
-            operation = service.operationDescription("mount");
-            service.startOperationCall(operation);
+        mountingTimer.start()
+    }
+
+    Timer {
+        id: mountingTimer
+        repeat: false
+        interval: 2220
+        onTriggered: {
+            if(! mounted) {
+                service = sdSource.serviceForSource(udi);
+                operation = service.operationDescription("mount");
+                service.startOperationCall(operation);
+            }
         }
     }
 
